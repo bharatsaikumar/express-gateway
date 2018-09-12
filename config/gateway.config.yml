@@ -1,0 +1,40 @@
+http:
+  port: 8080
+admin:
+  port: 9876
+  hostname: localhost
+apiEndpoints:
+
+  jwtexternal:
+    host: localhost
+    paths: 'jwtexternal'
+
+serviceEndpoints:
+  jwtexternal:
+    url: 'http://localhost:8080/jwtexternal'
+
+policies:
+  - basic-auth
+  - cors
+  - expression
+  - key-auth
+  - log
+  - oauth2
+  - proxy
+  - rate-limit
+  - jwt
+pipelines:
+
+  jwtexternal:
+    apiEndpoints:
+      - jwtexternal
+    policies:
+      -jwt:
+        action:
+          checkCredentialExistence: false
+          secretOrPublicKey: 'mySecretKey'
+      -proxy:
+        -action:
+          serviceEndpoint: jwtexternal
+          changeOrigin: true
+
